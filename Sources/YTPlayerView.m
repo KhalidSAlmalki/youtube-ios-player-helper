@@ -546,10 +546,13 @@ decisionHandler:(void (^)(WKNavigationActionPolicy))decisionHandler {
 createWebViewWithConfiguration:(WKWebViewConfiguration *)configuration
    forNavigationAction:(WKNavigationAction *)navigationAction
         windowFeatures:(WKWindowFeatures *)windowFeatures {
+   #ifdef UIApplication
   // Handle navigation actions initiated by Javascript.
   [[UIApplication sharedApplication] openURL:navigationAction.request.URL
                                      options:@{}
                            completionHandler:nil];
+  #endif
+
   // Returning nil results in canceling the navigation, which has already been handled above.
   return nil;
 }
@@ -693,9 +696,11 @@ createWebViewWithConfiguration:(WKWebViewConfiguration *)configuration
   if (ytMatch || adMatch || oauthMatch || staticProxyMatch || syndicationMatch) {
     return YES;
   } else {
+  #ifdef UIApplication
     [[UIApplication sharedApplication] openURL:url
                                        options:@{UIApplicationOpenURLOptionUniversalLinksOnly: @NO}
                              completionHandler:nil];
+  #endif
     return NO;
   }
 }
